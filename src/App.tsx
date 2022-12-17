@@ -1,4 +1,6 @@
+import axios from "axios";
 import { useState } from "react";
+import JokeItem from "./components/JokeItem";
 import {
   Wrapper,
   Row,
@@ -10,37 +12,34 @@ import {
 } from "./components/styled/index";
 import image from "./image/image.svg";
 
-// {
-// "category": "Programming",
-// "type": "twopart",
-// "setup": "So what's a set of predefined steps the government might take to preserve the environment?",
-// "delivery": "An Al-Gore-ithm.",
-// "flags": {
-// "nsfw": false,
-// "religious": false,
-// "political": false,
-// "racist": false,
-// "sexist": false,
-// "explicit": false
-// },
-// "id": 52,
-// "safe": true,
-// "lang": "en"
-// }
-
-type Joke = {
-  id: number;
-  safe: boolean;
-  lang: "cs" | "de" | "en" | "es" | "fr" | "pt";
-  type: "single" | "twopart";
-  category:
-    | "Any"
+type Category = | "Any"
     | "Misc"
     | "Programming"
     | "Dark"
     | "Pun"
     | "Spooky"
     | "Christmas";
+
+type Flag = {
+  nsfw: boolean;
+  religious: boolean;
+  political: boolean;
+  racist: boolean;
+  sexist: boolean;
+  explicit: boolean;
+};
+
+
+type Joke = {
+  id: number;
+  setup?:string;
+  delivery?:string;
+  joke?:string;
+  safe: boolean;
+  lang: "cs" | "de" | "en" | "es" | "fr" | "pt";
+  type: "single" | "twopart";
+  category:Category
+    flags:Flag
 };
 
 const BASE_URL = "https://v2.jokeapi.dev/joke/Any";
@@ -48,13 +47,27 @@ const App = () => {
   const [error, setError] = useState(false);
 
   const [search, setSearch] = useState("");
-  const [jokes, setJokes] = useState([]);
+  const [jokes, setJokes] = useState<Joke[]>([]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
   };
 
-  const espri = (e: React.FormEvent<HTMLFormElement>) => {};
+  const espri =async (e: React.FormEvent<HTMLFormElement>) => {
+e.preventDefault()
+const sonuc=`${BASE_URL}?contains=${search}&amount=10`
+const {data}= await axios.get(sonuc)
+console.log(data);
+
+if(data.error){
+  setError(true)
+  setJokes([])
+}else{
+  setError(false)
+  setJokes(data.jokes)
+}
+setSearch("")
+  };
 
   return (
     <div>
@@ -72,6 +85,11 @@ const App = () => {
           ></Search>
           <Button type="submit">Submit</Button>
         </Form>
+        <div>
+          {error && <p>Yok böyle birşey...</p>}
+          {/* @ts-ignore */}
+          {jokes.length>0 && jokes.map(joke=><JokeItem key={joke.id} joke={joke}/>)}
+        </div>
       </Wrapper>
     </div>
   );
