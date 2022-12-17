@@ -6,7 +6,7 @@ const myTheme: DefaultTheme = {
 
   colors: {
     main: "cyan",
-    secondary: "magenta",
+    secondary: "red",
     white:"#fff",
     purple:"#53239C"
   },

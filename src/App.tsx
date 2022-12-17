@@ -11,38 +11,11 @@ import {
   Button,
 } from "./components/styled/index";
 import image from "./image/image.svg";
-
-type Category = | "Any"
-    | "Misc"
-    | "Programming"
-    | "Dark"
-    | "Pun"
-    | "Spooky"
-    | "Christmas";
-
-type Flag = {
-  nsfw: boolean;
-  religious: boolean;
-  political: boolean;
-  racist: boolean;
-  sexist: boolean;
-  explicit: boolean;
-};
+import {Flag,Joke,Category} from "./common/types"
 
 
-type Joke = {
-  id: number;
-  setup?:string;
-  delivery?:string;
-  joke?:string;
-  safe: boolean;
-  lang: "cs" | "de" | "en" | "es" | "fr" | "pt";
-  type: "single" | "twopart";
-  category:Category
-    flags:Flag
-};
-
-const BASE_URL = "https://v2.jokeapi.dev/joke/Any";
+const BASE_URL =
+  "https://v2.jokeapi.dev/joke/Any?blacklistFlags=racist,sexist,explicit";
 const App = () => {
   const [error, setError] = useState(false);
 
@@ -55,7 +28,7 @@ const App = () => {
 
   const espri =async (e: React.FormEvent<HTMLFormElement>) => {
 e.preventDefault()
-const sonuc=`${BASE_URL}?contains=${search}&amount=10`
+const sonuc=`${BASE_URL}&contains=${search}&amount=10`
 const {data}= await axios.get(sonuc)
 console.log(data);
 
