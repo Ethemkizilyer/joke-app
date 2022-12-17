@@ -7,6 +7,6 @@ interface ImageProps {
 
 const Image = styled.img<ImageProps>`
 width: 100px;
-height: 10px;
+height: 100px;
 `;
 export default Image;
